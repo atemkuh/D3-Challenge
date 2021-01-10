@@ -26,3 +26,22 @@ d3.csv("assets/data/data.csv").then(function(riskData) {
         data.abbr = data.abbr;
         data.income = +data.income;
     });
+
+
+// Create scales for X and Y 
+const linearXScale = d3.scaleLinear()
+domain(d3.extent(riskData, d => d.poverty))
+    .range([0,width])
+    .nice();//crisp axes on intersection 
+
+const linearYScale = d3.scaleLinear()
+domain(6,d3.max(riskData, d => d.healthcare))
+    .range([0,height])
+    .nice();//crisp axes on intersection 
+
+// create Axis
+const xAxis = d3.axisBottom(linearXScale);
+const yAxis = d3.axisLeft(linearYScale);
+
+//append Axis to chartGroup
+
