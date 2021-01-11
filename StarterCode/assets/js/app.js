@@ -5,9 +5,9 @@ var svgHeight = 500;
 var margin = {
   top: 20,
   right: 40,
-  bottom:100,
-  left: 50,
-};
+  bottom: 80,
+  left:100
+  };
 var width = svgWidth - margin.left - margin.right;
 var height = svgHeight - margin.top - margin.bottom;
 
@@ -35,14 +35,14 @@ d3.csv("assets/data/data.csv").then(function(riskData) {
 
 // Create scales for X and Y 
   const linearXScale = d3.scaleLinear()
-    .domain(d3.extent(riskData, d => d.poverty))
-    .range([0, width])
-    .nice(); //crisp axes on intersection
+    .domain([8.5, d3.max(riskData, d => d.poverty)])
+    .range([0, width]);
+   
 
   const linearYScale = d3.scaleLinear()
-    .domain([6,d3.max(riskData, d => d.healthcare)])
-    .range([height, 0])
-    .nice();//crisp axes on intersection
+    .domain([3.5, d3.max(riskData, d => d.healthcare)])
+    .range([height, 0]);
+   
 
  // create Axis
   const xAxis = d3.axisBottom(linearXScale);
@@ -80,6 +80,31 @@ chartGroup.append("g")
     .style("font-weight", "bold")
     .attr("alignment-baseline", "central");
 
+//add titles
+  chartGroup.append("text")
+    .attr("transform", `translate(${width / 2}, ${height + margin.top + 13})`)
+    .attr("text-anchor", "middle")
+    .attr("font-size", "14px")
+    .attr("fill", "black")
+    .style("font-weight", "Bold")
+    .text("Poverty");
 
-
+ chartGroup.append("text")
+    .attr("y", 0 - ((margin.left / 2) + 2))
+    .attr("x", 0 - (height / 2))
+    .attr("text-anchor", "middle")
+    .attr("font-size", "14px")
+    .attr("fill", "black")
+    .style("font-weight", "Bold")
+    .attr("transform", "rotate(-90)")
+    .text("Health Care (%)");
+  })
+  
+    .catch(function(error) {
+  //console.log(error);
 });
+
+
+
+///=====================ATTEMPTING BONUS ===============
+
