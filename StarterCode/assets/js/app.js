@@ -1,5 +1,6 @@
 // @TODO: YOUR CODE HERE!
 //setup
+function makeResponsive() {
 var svgWidth = 720;
 var svgHeight = 500;
 var margin = {
@@ -37,7 +38,7 @@ d3.csv("assets/data/data.csv").then(function(riskData) {
   const linearXScale = d3.scaleLinear()
     .domain([8.5, d3.max(riskData, d => d.poverty)])
     .range([0, width]);
-   
+    
 
   const linearYScale = d3.scaleLinear()
     .domain([3.5, d3.max(riskData, d => d.healthcare)])
@@ -102,9 +103,58 @@ chartGroup.append("g")
   
     .catch(function(error) {
   //console.log(error);
+
+
 });
+}
 
-
+makeResponsive();
 
 ///=====================ATTEMPTING BONUS ===============
+// @TODO: YOUR CODE HERE!
+//setup
+function makeResponsive() {
+  var svgWidth = 720;
+  var svgHeight = 500;
+  var margin = {
+    top: 20,
+    right: 40,
+    bottom: 80,
+    left:100
+    };
+  var width = svgWidth - margin.left - margin.right;
+  var height = svgHeight - margin.top - margin.bottom;
+  
+  ///setup SVG wrapper the append group to hold charts 
+  var svg = d3
+    .select("#scatter")
+    .append("svg")
+    .attr("width", svgWidth)
+    .attr("height", svgHeight);
+  
+  var chartGroup = svg.append("g")
+    .attr("transform", `translate(${margin.left}, ${margin.top})`);
+  
+    //default selection
+  var defaultXaxis = "poverty";
+  var defaultYaxis = "healthcare"
 
+//create a function using xAxis const to update data  when clicked
+function renderXaxis(newLinearXscale,xAxis){
+  const bottomAxis = d3.axisBottom(newLinearXscale);
+
+  xAxis.tansition()
+      .duration(700)
+      .call(bottomAxis)
+  return xAxis;
+}
+//create a function using xAxis const to update data  when clicked
+
+function renderYaxis(newLinearYscale,yAxis){
+  const leftAxis = d3.axisLeft(newLinearYscale);
+
+  yAxis.tansition()
+      .duration(700)
+      .call(leftAxis)
+  return yAxis;
+}
