@@ -175,3 +175,19 @@ function displayTexts(textGroup,newLinearXscale,newLinearYscale, defaultXaxis,de
   .attr("cy", d =>newLinearYscale(d[defaultYaxis]));
 return textGroup;
 }
+
+//use function to ccreate and update x and y scales 
+//X
+function xScales(healthData,defaultXaxis){
+  const xLinearScale = d3.scaleLinear()
+  .domain([d3.min(healthData, d => d[defaultXaxis]*0.8), d3.max(healthData,d=>d[defaultXaxis]*1.2)])
+  .range([0,width]);
+return xLinearScale;
+}
+//Y
+function yScales(healthData,defaultYaxis){
+  const yLinearScale = d3.scaleLinear()
+  .domain([d3.min(healthData, d => d[defaultYaxis]*0.8), d3.max(healthData,d=>d[defaultYaxis]*1.2)])
+  .range([0,height]);
+return yLinearScale;
+}
