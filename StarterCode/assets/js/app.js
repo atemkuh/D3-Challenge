@@ -158,3 +158,20 @@ function renderYaxis(newLinearYscale,yAxis){
       .call(leftAxis)
   return yAxis;
 }
+//update circles and text group with a transition
+
+function displayCircles(circlesGroup,newLinearXscale,newLinearYscale, defaultXaxis,defaultYaxis){
+  circlesGroup.transition()
+  .duration(700)
+  .attr("cx", d => newLinearXscale(d[defaultXaxis]))
+  .attr("cy", d =>newLinearYscale(d[defaultYaxis]));
+return circlesGroup;
+}
+//text
+function displayTexts(textGroup,newLinearXscale,newLinearYscale, defaultXaxis,defaultYaxis){
+  textGroup.transition()
+  .duration(700)
+  .attr("cx", d => newLinearXscale(d[defaultXaxis]))
+  .attr("cy", d =>newLinearYscale(d[defaultYaxis]));
+return textGroup;
+}
