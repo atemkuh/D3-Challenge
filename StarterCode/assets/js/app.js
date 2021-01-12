@@ -31,6 +31,7 @@ d3.csv("assets/data/data.csv").then(function(riskData) {
       data.poverty = +data.poverty;
       data.abbr = data.abbr;
       data.income = +data.income;
+      data.obesity = +data.obesity;
     // console.log(data);
   });
 
@@ -246,6 +247,18 @@ function toolTipProperty(defaultXaxis,defaultYaxis,circlesGroup){
   d3.select(this).style("stroke", "white");
   })
    return circlesGroup;
-
-
 }
+
+
+//link data, and format data to num values
+d3.csv("assets/data/data.csv").then(function(riskData) {
+  riskData.forEach(function(data) {
+    data.age = +data.age;
+    data.smokes = +data.smokes;
+    data.healthcare = +data.healthcare;
+    data.poverty = +data.poverty;
+    data.abbr = data.abbr;
+    data.income = +data.income;
+    data.obesity = +data.obesity;
+  // console.log(data);
+});
