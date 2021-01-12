@@ -191,3 +191,61 @@ function yScales(healthData,defaultYaxis){
   .range([0,height]);
 return yLinearScale;
 }
+
+//tooltip function for circles
+
+function toolTipProperty(defaultXaxis,defaultYaxis,circlesGroup){
+  var xLabel = ""
+  var yLabel = ""
+  if (defaultXaxis === "poverty"){
+    xLabel = "Poverty: ";
+  }
+  else if (defaultXaxis === "age"){
+    xLabel = "Age: ";
+  }
+  else{
+    xLabel = "Income: $";
+  }
+  if (defaultYaxis === "healthcare"){
+    yLabel = "Healthcare: "
+  }
+  else if (defaultYaxis === "smokes"){
+    yLabel = "Smokes: "
+  }
+  else{
+    yLabel = "Obesity: "
+  }
+  //console.log(toolTipProperty);
+  const toolTip = d3.tip()
+                    .attr("class", "d3-tip")
+                    .offset([80, -60])
+                    .html(function(d){
+                      if (defaultYaxis === "smokes" || defaultYaxis === "obesity") {
+                        if (defaultXaxis === "poverty"){
+                          return(`${d.state},${d.abbr}<br>${xLabel}${d[defaultXaxis]}%<br>${yLabel}${d[defaultYaxis]}%`)
+                        }
+                        return(`${d.state},${d.abbr}<br>${xLabel}${d[defaultXaxis]}<br>${yLabel}${d[defaultYaxis]}%`)
+                      }
+                      else if (defaultXaxis === "poverty"){
+                        return(`${d.state},${d.abbr}<br>${xLabel}${d[defaultXaxis]}%<br>${yLabel}${d[defaultYaxis]}`)
+                      }
+                      else{
+                        return(`${d.state},${d.abbr}<br>${xLabel}${d[defaultXaxis]}<br>${yLabel}${d[defaultYaxis]}`)
+                      }
+                    })
+
+  circlesGroup.call(toolTip);
+  
+  circlesGroup.on("mouseover", function(data){
+  toolTip.show(data, this);
+  d3.select(this).style("stroke", "black");
+  })
+ 
+  circlesGroup.on("mouseover", function(data,index){
+  toolTip.hide(data, this);
+  d3.select(this).style("stroke", "white");
+  })
+   return circlesGroup;
+
+
+}
