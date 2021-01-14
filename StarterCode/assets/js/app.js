@@ -261,4 +261,53 @@ d3.csv("assets/data/data.csv").then(function(riskData) {
     data.income = +data.income;
     data.obesity = +data.obesity;
   // console.log(data);
-});
+})
+
+//use linearXScale & linearYScale funtion to get data
+var newLinearXscale = xScales(healthData, defaultXaxis);
+var newLinearYscale = yScales(healthData,defaultYaxis);
+
+// use const to create axis funtion
+const bottomAxis = d3.axisBottom(newLinearXscale);
+const leftAxis = d3.axisLeft(newLinearYscale);
+
+// XAxis
+var xAxis = chartGroup.append("g")
+                        .classed("x-axis", true)
+                        .attr("transform", `translate(0, ${height})`)
+                        .call(bottomAxis)
+var yAxis = chartGroup.append("g")
+                        .classed("y-axis", true)
+                        .call(leftAxis)
+var crlTxtGroup = chartGroup.selectAll("mycircles")
+                        .data(healthData)
+                        .enter()
+                        .append("g")
+var circlesGroup = crlTxtGroup.append("circle")
+                        .attr("cx", d=>newLinearXscale(d[defaultXaxis]))
+                        .attr("cy", d=>newLinearYscale(d[defaultXaxis]))
+                        .classed("stateCircle", true)
+                        .attr("r", 8)
+                        .attr("opacity", "1");
+var textGroup = crlTxtGroup.append("text")
+                        .text(d=>d.abbr)
+                        .attr("x", d=>newLinearXscale(d[defaultXaxis]))
+                        .attr("y", d=>newLinearYscale(d[defaultYaxis])+3)
+                        .classed("stateText", true)
+                        .style("font-size", "7px")
+                        .style("font-weight", "800")
+
+// Create group labels for x and y axis
+const groupLabelX= chartGroup.append("g")
+                        .attr("transform", `translate(${width / 2}, ${height + 20 + margin.top})`);
+
+const groupLabelY = chartGroup.append("g")
+                        .attr("transform", `translate(${0-margin.left/4}, ${height/2})`);
+
+const labelPoverty = groupLabelX.append("text")
+                        .attr("x", 0)
+                        .attr("y", 0)
+                        .attr("value", "poverty") 
+                        .classed("active", true)
+                        .classed("aText", true)
+                        .text("In Poverty (%)");
