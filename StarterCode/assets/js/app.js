@@ -114,7 +114,7 @@ makeResponsive();
 ///=====================ATTEMPTING BONUS ===============
 // @TODO: YOUR CODE HERE!
 //setup
-function makeResponsive() {
+
   var svgWidth = 720;
   var svgHeight = 500;
   var margin = {
@@ -179,14 +179,14 @@ return textGroup;
 
 //use function to ccreate and update x and y scales 
 //X
-function xScales(healthData,defaultXaxis){
+function xScale(healthData,defaultXaxis){
   const xLinearScale = d3.scaleLinear()
   .domain([d3.min(healthData, d => d[defaultXaxis]*0.8), d3.max(healthData,d=>d[defaultXaxis]*1.2)])
   .range([0,width]);
 return xLinearScale;
 }
 //Y
-function yScales(healthData,defaultYaxis){
+function yScale(healthData,defaultYaxis){
   const yLinearScale = d3.scaleLinear()
   .domain([d3.min(healthData, d => d[defaultYaxis]*0.8), d3.max(healthData,d=>d[defaultYaxis]*1.2)])
   .range([0,height]);
@@ -236,7 +236,6 @@ function toolTipProperty(defaultXaxis,defaultYaxis,circlesGroup){
                     })
 
   circlesGroup.call(toolTip);
-  
   circlesGroup.on("mouseover", function(data){
   toolTip.show(data, this);
   d3.select(this).style("stroke", "black");
@@ -264,12 +263,12 @@ d3.csv("assets/data/data.csv").then(function(riskData) {
 })
 
 //use linearXScale & linearYScale funtion to get data
-var newLinearXscale = xScales(healthData, defaultXaxis);
-var newLinearYscale = yScales(healthData,defaultYaxis);
+var xLinearScale = xScales(healthData, defaultXaxis);
+var yLinearScale = yScales(healthData,defaultYaxis)
 
 // use const to create axis funtion
-  const bottomAxis = d3.axisBottom(newLinearXscale);
-  const leftAxis = d3.axisLeft(newLinearYscale);
+  const bottomAxis = d3.axisBottom(xLinearScale);
+  const leftAxis = d3.axisLeft(yLinearScale);
 
 // XAxis
 var xAxis = chartGroup.append("g")
@@ -284,15 +283,15 @@ var crlTxtGroup = chartGroup.selectAll("mycircles")
                         .enter()
                         .append("g")
 var circlesGroup = crlTxtGroup.append("circle")
-                        .attr("cx", d=>newLinearXscale(d[defaultXaxis]))
-                        .attr("cy", d=>newLinearYscale(d[defaultXaxis]))
+                        .attr("cx", d=>xLinearScale(d[defaultXaxis]))
+                        .attr("cy", d=>yLinearScale(d[defaultXaxis]))
                         .classed("stateCircle", true)
                         .attr("r", 8)
                         .attr("opacity", "1");
 var textGroup = crlTxtGroup.append("text")
                         .text(d=>d.abbr)
-                        .attr("x", d=>newLinearXscale(d[defaultXaxis]))
-                        .attr("y", d=>newLinearYscale(d[defaultYaxis])+3)
+                        .attr("x", d=>xLinearScale(d[defaultXaxis]))
+                        .attr("y", d=>yLinearScale(d[defaultYaxis])+3)
                         .classed("stateText", true)
                         .style("font-size", "7px")
                         .style("font-weight", "800")
@@ -365,3 +364,23 @@ var textGroup = crlTxtGroup.append("text")
 
 
 circlesGroup = toolTipProperty(defaultXaxis,defaultYaxis,circlesGroup);
+
+// create even listener for X
+
+    groupLabelX.selectAll("text")
+      .on("click", function(){
+        const value = d3.select(this)
+        .attr("value");
+        console.log('${value} click')
+        if (value!==defaultXaxis){
+          //then replace
+          defaultXaxis = value
+          console.log(defaultYaxis)
+          xLinearScale = xScales(healthData,defaultXaxis);// update scale X for new data
+          xAxis =renderXaxis(xLinearScale)
+
+
+        }
+      })
+
+})()
