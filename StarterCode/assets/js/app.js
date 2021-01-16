@@ -304,90 +304,125 @@ let txtGroup = crlTxtGroup.append("text")
       .style("font-size", "7px")
       .style("font-weight", "800")
 
-// // Create group labels for x and y axis
-//   const groupLabelX= chartGroup.append("g")
-//                           .attr("transform", `translate(${width / 2}, ${height + 20 + margin.top})`);
+// Create group labels for x and y axis
+const xlabelsGroup = chartGroup.append("g")
+      .attr("transform", `translate(${width / 2}, ${height + 20 + margin.top})`);
+const ylabelsGroup = chartGroup.append("g")
+      .attr("transform", `translate(${0-margin.left/4}, ${height/2})`);
 
-//   const groupLabelY = chartGroup.append("g")
-//                           .attr("transform", `translate(${0-margin.left/4}, ${height/2})`);
+      const povertyLabel = xlabelsGroup.append("text")
+      .attr("x", 0)
+      .attr("y", 0)
+      .attr("value", "poverty") // value to grab for event listener
+      .classed("active", true)
+      .classed("aText", true)
+      .text("In Poverty (%)");
 
-//   const labelPoverty = groupLabelX.append("text")
-//                         .attr("x", 0)
-//                         .attr("y", 0)
-//                         .attr("value", "poverty") 
-//                         .classed("active", true)
-//                         .classed("aText", true)
-//                         .text("In Poverty (%)");
+const ageLabel = xlabelsGroup.append("text")
+      .attr("x", 0)
+      .attr("y", 20)
+      .attr("value", "age") // value to grab for event listener
+      .classed("inactive", true)
+      .classed("aText", true)
+      .text("Age (Median)");
+
+const incomeLabel = xlabelsGroup.append("text")
+      .attr("x", 0)
+      .attr("y", 40)
+      .attr("value", "income") // value to grab for event listener
+      .classed("inactive", true)
+      .classed("aText", true)
+      .text("Household Income (Median)");
+
+const healthCareLabel = ylabelsGroup.append("text")
+      .attr("y", 0 - 20)
+      .attr("x", 0)
+      .attr("transform", "rotate(-90)")
+      .attr("dy", "1em")
+      .attr("value", "healthcare")
+      .classed("active", true)
+      .classed("aText", true)
+      .text("Lacks Healthcare (%)");
+
+const smokeLabel = ylabelsGroup.append("text")
+      .attr("y", 0 - 40)
+      .attr("x", 0)
+      .attr("transform", "rotate(-90)")
+      .attr("dy", "1em")
+      .attr("value", "smokes")
+      .classed("inactive", true)
+      .classed("aText", true)
+      .text("Smokes (%)");
+
+const obesityLabel = ylabelsGroup.append("text")
+      .attr("y", 0 - 60)
+      .attr("x", 0)
+      .attr("transform", "rotate(-90)")
+      .attr("dy", "1em")
+      .attr("value", "obesity")
+      .classed("inactive", true)
+      .classed("aText", true)
+      .text("Obese (%)");
+
+    circlesGroup = updateToolTip(chosenXaxis, chosenYaxis, circlesGroup);
+
+// create even listener for X
+xlabelsGroup.selectAll("text")
+      .on("click", function() {
+      const value = d3.select(this).attr("value");
+      console.log(`${value} click`)
+      if (value !== chosenXaxis) {
+          //then replace
+          chosenXaxis = value;
+          console.log(chosenXaxis)
+           
+        xLinearScale = xScale(healthData, chosenXaxis);// update scale X for new data
+        xAxis = renderXAxes(xLinearScale, xAxis);// transition using x axis
+        circlesGroup = renderCircles(circlesGroup, xLinearScale, yLinearScale, chosenXaxis, chosenYaxis);//circle values
+        txtGroup = renderTexts(txtGroup, xLinearScale, yLinearScale, chosenXaxis, chosenYaxis);// text values
+  
+          //format text
+      if (chosenXaxis === "poverty") {
+        povertyLabel
+            .classed("active", true)
+            .classed("inactive", false);
+        ageLabel
+            .classed("active", false)
+            .classed("inactive", true);
+        incomeLabel
+            .classed("active", false)
+            .classed("inactive", true);
+        }
+
+  else if (chosenXaxis === "age"){
+        povertyLabel
+            .classed("active", false)
+            .classed("inactive", true);
+        ageLabel
+            .classed("active", true)
+            .classed("inactive", false);
+        incomeLabel
+            .classed("active", false)
+            .classed("inactive", true);
+        }
+
+      else{
+        povertyLabel
+            .classed("active", false)
+            .classed("inactive", true);
+        ageLabel
+            .classed("active", false)
+            .classed("inactive", true);
+        incomeLabel
+            .classed("active", true)
+            .classed("inactive", false);
+        }
+        
+        circlesGroup = updateToolTip(chosenXaxis, chosenYaxis, circlesGroup);
 
 
-//   const labelAge= groupLabelX.append("text")
-//                         .attr("x", 0)
-//                         .attr("y", 20)
-//                         .attr("value", "age")
-//                         .classed("inactive", true)
-//                         .classed("aText", true)
-//                         .text("Age (Median)");
-
-
-//   const labelIncome= groupLabelX.append("text")
-//                           .attr("x", 0)
-//                           .attr("y", 40)
-//                           .attr("value", "income")
-//                           .classed("inactive", true)
-//                           .classed("aText", true)
-//                           .text("Household Income (Median)");
-
-
-//   const labelHealthCare= groupLabelY.append("text")
-//                           .attr("y", 0 - 20)
-//                           .attr("x", 0)
-//                           .attr("transform", "rotate(-90)")
-//                           .attr("dy", "1em")
-//                           .attr("value", "healthcare")
-//                           .classed("active", true)
-//                           .classed("aText", true)
-//                           .text("Lacks Healthcare (%)");
-
-
-//   const labelSmoke = groupLabelY.append("text")
-//                           .attr("y", 0 - 40)
-//                           .attr("x", 0)
-//                           .attr("transform", "rotate(-90)")
-//                           .attr("dy", "1em")
-//                           .attr("value", "smokes")
-//                           .classed("inactive", true)
-//                           .classed("aText", true)
-//                           .text("Smokes (%)");
-
-
-//   const labelObesity = groupLabelY.append("text")
-//                           .attr("y", 0 - 60)
-//                           .attr("x", 0)
-//                           .attr("transform", "rotate(-90)")
-//                           .attr("dy", "1em")
-//                           .attr("value", "obesity")
-//                           .classed("inactive", true)
-//                           .classed("aText", true)
-//                           .text("Obese (%)");
-
-
-// circlesGroup = toolTipProperty(defaultXaxis,defaultYaxis,circlesGroup);
-
-// // create even listener for X
-
-//     groupLabelX.selectAll("text")
-//       .on("click", function(){
-//         const value = d3.select(this)
-//         .attr("value");
-//         console.log('${value} click')
-//         if (value!==defaultXaxis){
-//           //then replace
-//           defaultXaxis = value
-//           console.log(defaultYaxis)
-//           xLinearScale = xScales(healthData,defaultXaxis);// update scale X for new data
-//           xAxis =renderXaxis(xLinearScale)// transition using x axis
-//           displayCircles = renderCircles(displayCircles, xLinearScale,yLinearScale,defaultXaxis,defaultYaxis);//circle values
-//           textGroup = renderTexts(textGroup,xLinearScale,yLinearScale.defaultXaxis,defaultYaxis);// text values
+        }
+})
 
 
 })()
