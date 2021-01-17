@@ -255,7 +255,7 @@ const toolTip = d3.tip()
 //link data, and format data to num values
 (async function(){
   const healthData = await d3.csv("assets/data/data.csv");
-//d3.csv("assets/data/data.csv").then(function(riskData) {
+
   healthData.forEach(function(data) {
     data.age = +data.age;
     data.smokes = +data.smokes;
@@ -293,7 +293,7 @@ let circlesGroup = crlTxtGroup.append("circle")
     .attr("cx", d=>xLinearScale(d[chosenXaxis]))
     .attr("cy", d=>yLinearScale(d[chosenYaxis]))
     .classed("stateCircle", true)
-    .attr("r", 8)
+    .attr("r", 10)
     .attr("opacity", "1");
 
 let txtGroup = crlTxtGroup.append("text")
@@ -423,6 +423,57 @@ xlabelsGroup.selectAll("text")
 
         }
 })
+// create even listener for Y
+
+ylabelsGroup.selectAll("text")
+.on("click", function() {
+  const value = d3.select(this).attr("value");
+console.log(`${value} click`)
+if (value !== chosenYaxis) {
+  chosenYaxis = value;
+  console.log(chosenYaxis)
+  yLinearScale = yScale(healthData, chosenYaxis);
+  yAxis = renderYAxes(yLinearScale, yAxis);
+  circlesGroup = renderCircles(circlesGroup, xLinearScale, yLinearScale, chosenXaxis, chosenYaxis);
+  txtGroup = renderTexts(txtGroup, xLinearScale, yLinearScale, chosenXaxis, chosenYaxis);
+  if (chosenYaxis === "healthcare") {
+    healthCareLabel
+          .classed("active", true)
+          .classed("inactive", false);
+    smokeLabel
+          .classed("active", false)
+          .classed("inactive", true);
+    obesityLabel
+          .classed("active", false)
+          .classed("inactive", true);
+  }
+  else if (chosenYaxis === "smokes"){
+    healthCareLabel
+        .classed("active", false)
+        .classed("inactive", true);
+    smokeLabel
+        .classed("active", true)
+        .classed("inactive", false);
+    obesityLabel
+        .classed("active", false)
+        .classed("inactive", true);
+  }
+  else{
+    healthCareLabel
+          .classed("active", false)
+          .classed("inactive", true);
+    smokeLabel
+          .classed("active", false)
+          .classed("inactive", true);
+    obesityLabel
+          .classed("active", true)
+          .classed("inactive", false);
+  }
+   circlesGroup = updateToolTip(chosenXaxis, chosenYaxis, circlesGroup);
+}
+
+})
+
 
 
 })()
